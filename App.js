@@ -1,21 +1,87 @@
-import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView } from 'react-native';
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+import WeekView from './src/weekView/WeekView'
+
+const generateDates = (hours, minutes) => {
+  const date = new Date();
+  date.setHours(date.getHours() + hours);
+  if (minutes != null) {
+    date.setMinutes(minutes);
+  }
+  return date;
+};
+
+const sampleEvents = [
+  {
+    id: 1,
+    description: 'Event 1',
+    startDate: generateDates(0),
+    endDate: generateDates(2),
+    color: 'blue',
+  },
+  {
+    id: 2,
+    description: 'Event 2',
+    startDate: generateDates(1),
+    endDate: generateDates(4),
+    color: 'red',
+  },
+  {
+    id: 3,
+    description: 'Event 3',
+    startDate: generateDates(-5),
+    endDate: generateDates(-3),
+    color: 'green',
+  },
+];
+
+class App extends React.Component {
+  state = {
+    events: sampleEvents,
+    selectedDate: new Date(),
+  };
+
+  onEventPress = ({id, color, startDate, endDate}) => {
+    Alert.alert(
+      `event ${color} - ${id}`,
+      `start: ${startDate}\nend: ${endDate}`,
+    );
+  };
+
+  render() {
+    const {events, selectedDate} = this.state;
+    return (
+      <>
+        <StatusBar barStyle="dark-content" />
+        <SafeAreaView style={styles.container}>
+          <WeekView
+            events={events}
+            selectedDate={selectedDate}
+            numberOfDays={3}
+            onEventPress={this.onEventPress}
+            headerStyle={styles.headerStyle}
+            headerTextColor="#fff"
+            formatDateHeader="MMM D"
+            hoursInDisplay={12}
+            startHour={8}
+          />
+        </SafeAreaView>
+      </>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: '#FFF',
+    paddingTop: 22,
+  },
+  headerStyle: {
+    backgroundColor: '#4286f4',
   },
 });
+
+export default App;
+ 
